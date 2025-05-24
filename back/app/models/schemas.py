@@ -18,13 +18,13 @@ class TaskCreate(TsskBase):
 class TaskUpdate(BaseModel):
     title: Optional[str] = None
     description: Optional[str] = None
-    is_completed: Optional[bool] = None
+    completed: Optional[bool] = None
 
 
 # Task is used for returning a task in API responses
 class Task(TsskBase):
     id: int
-    is_completed: bool
+    completed: bool
     created_at: datetime
 
     class Config:
