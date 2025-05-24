@@ -45,3 +45,14 @@ def update_task(db: Session, task_id: int, task_update_data: schemas.TaskUpdate)
     db.commit()
     db.refresh(db_task)
     return db_task
+
+
+# CRUD operations for Task deletion
+def delete_task(db: Session, task_id: int) -> Optional[database_models.Task]:
+    db_task = get_task(db=db, task_id=task_id)
+    if db_task is None:
+        return None
+
+    db.delete(db_task)
+    db.commit()
+    return db_task

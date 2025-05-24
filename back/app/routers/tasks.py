@@ -59,3 +59,14 @@ def update_existing_task(task_id: int,
             detail="Task not found",
         )
     return update_task
+
+
+@router.delete("/{task_id}", status_code=status.HTTP_200_OK)
+def remove_task(task_id: int, db: Session = Depends(database.get_db)):
+    deleted_task = crud_tasks.delete_task(db=db, task_id=task_id)
+    if deleted_task is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Task not found",
+        )
+    return {"detail": f"Task with id{task_id} deleted successfully"}
