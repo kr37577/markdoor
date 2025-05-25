@@ -1,5 +1,3 @@
-const { response } = require("express");
-
 document.addEventListener('DOMContentLoaded', () => {
     const taskForm = document.getElementById('task-form');
     const taskTitleInput = document.getElementById('task-title');
@@ -18,9 +16,11 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
 
+    
+
     // Function to get task and display it in the task list
     async function fetchTasks(filter = 'all') {
-        let url = f`${API_BASE_URL}/`;
+        let url = `${API_BASE_URL}/`;
         if (filter === 'active') {
             url += '?completed=false';
         } else if (filter === 'completed') {
@@ -28,11 +28,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         try {
-            const reposense = await fetch(url);
+            const response = await fetch(url);
             if (!response.ok) {
                 throw new Error(`Error fetching tasks: ${response.statusText}`);
             }
-            const tasks = await reposense.json();
+            const tasks = await response.json();
             renderTasks(tasks);
         } catch (error) {
             console.error('Error fetching tasks:', error);
@@ -83,9 +83,111 @@ document.addEventListener('DOMContentLoaded', () => {
             completeCheckbox.checked = task.completed;
             completeCheckbox.addEventListener('change', () => toggleTaskCompletion(task.id, completeCheckbox.checked));
 
+            const deleteButton = document.createElement('button');
+            deleteButton.textContent = '削除';
+            deleteButton.classList.add('delete-button');
+            deleteButton.addEventListener('click', () => deleteTask(task.id));
+
+
+            taskActions.appendChild(completeCheckbox);
+            taskActions.appendChild(deleteButton);
+
+
+            listItem.appendChild(taskInfo);
+            listItem.appendChild(taskActions);
+            taskList.appendChild(listItem);
         });
     }
 
+    // Function to add a new task
+    taskForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const title = taskTitleInput.value.trim();
+        const description = taskDescriptionInput.value.trim();
+
+        if (!title) {
+            showAlert('タスクのタイトルを入力してください。', 'warning');
+            return;
+        }
+
+        try {
+            const response = await fetch(`${API_BASE_URL}` + '/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ title, description }),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({detail: 'Unknown error'}));
+                throw new Error(`Error creating task: ${errorData.detail || response.statusText}`);
+            }
+
+            const newTask = await response.json();
+            showAlert('タスクが作成されました。', 'success');
+            taskForm.reset();
+            fetchTasks(filterStatusSelect.value); // Refresh the task list
+        } catch (error) {
+            console.error('Error creating task:', error);
+            showAlert('タスクの作成に失敗しました。後でもう一度試してください。', 'error');
+        }
+    });
+
+
+    // Function to toggle task completion status
+    async function toggleTaskCompletion(taskId, completed) {
+        try {
+            const response = await fetch(`${API_BASE_URL}/${taskId}/`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ completed: completed }),
+            });
+
+            if (!response.ok) {
+                errorData = await response.json().catch(() => ({detail: 'Unknown error'}));
+                throw new Error(`Error updating task: ${errorData.detail || response.statusText}`);
+            }
+
+            fetchTasks(filterStatusSelect.value); // Refresh the task list
+        } catch (error) {
+            console.error('Error updating task:', error);
+            showAlert('タスクのステータス更新に失敗しました。後でもう一度試してください。', 'error');
+        }
+    }
+
+    // Function to delete a task
+    async function deleteTask(taskId) {
+        if (!confirm('本当にこのタスクを削除しますか？')) {
+            return;
+        }
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/${taskId}/`, {
+                method: 'DELETE',
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({detail: 'Unknown error'}));
+                throw new Error(`Error deleting task: ${errorData.detail || response.statusText}`);
+            }
+
+            showAlert('タスクが削除されました。', 'success');
+            fetchTasks(filterStatusSelect.value); // Refresh the task list
+        } catch (error) {
+            console.error('Error deleting task:', error);
+            showAlert('タスクの削除に失敗しました。後でもう一度試してください。', 'error');
+        }
+    }
+
+
+    filterStatusSelect.addEventListener('change', (event) => {
+        const filter = event.target.value;
+        fetchTasks(filter);
+    });
 
 
     function initializeApp() {
