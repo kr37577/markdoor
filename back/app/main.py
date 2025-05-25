@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from .database import database
 from .routers import tasks
 from .models import database_models
@@ -13,6 +14,16 @@ app = FastAPI(
     title="Todo API",
     description="A simple API for managing tasks",
     version="1.0.0",
+)
+
+
+# Add CORS middleware to allow cross-origin requests
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 
