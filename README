@@ -1,23 +1,22 @@
 Markdoor面接前タスク
 
 1.  プロジェクトリポジトリをクローン
-    ```bash
-    git clone <リポジトリURL>
-    cd <プロジェクト名>/back
     ```
-2.  仮想環境を作成し，有効化します (推奨)
+    git clone <リポジトリURL>
+    ```
+2.  仮想環境を作成し，有効化する(推奨)
     ```
     python -m venv venv
     # macOS/Linuxの場合
     source venv/bin/activate
     ```
 3.  必要なライブラリをインストール
-    ```bash
+    ```
     pip install -r requirements.txt
     ```
-4.  FastAPIアプリケーションを起動(`back` ディレクトリ直下で実行)
-    ```bash
-    uvicorn app.main:app --reload
+4.  FastAPIアプリケーションを起動(ディレクトリ直下で実行)
+    ```
+    uvicorn back.app.main:app --reload
     ```
     デフォルトでは `http://127.0.0.1:8000` でバックエンドAPIが起動
     APIドキュメントは `http://127.0.0.1:8000/docs` で確認可能
