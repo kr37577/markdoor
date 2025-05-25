@@ -176,3 +176,29 @@ button[type="submit"]:hover {
 #cancel-edit-button:hover {
     background-color: #5a6268;
 }
+
+.show-form-button {
+    display: block;
+    width: 100%;
+    padding: 15px;
+    background-color: #5cb85c;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+
+.show-form-button:hover {
+    background-color: #4cae4c;
+}
+
+/* フォームのスタイル調整 */
+#task-form {
+    margin-bottom: 20px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}

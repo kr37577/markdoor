@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const taskList = document.getElementById('task-list');
     const filterStatusSelect = document.getElementById('filter-status');
     const cancelEditButton = document.getElementById('cancel-edit-button');
+    const showFormButton = document.getElementById('show-form-button');
 
 
     const API_BASE_URL = 'http://127.0.0.1:8000/tasks';
@@ -15,6 +16,29 @@ document.addEventListener('DOMContentLoaded', () => {
         alert(message);
         console.log(`Notification (${type}): ${message}`);
     };
+
+
+    // Function to show the task form
+    function showTaskForm() {
+        showFormButton.style.display = 'none';
+        taskForm.style.display = 'block';
+        taskTitleInput.focus(); 
+    }
+
+
+    // Function to hide the task form
+    function hideTaskForm() {
+        taskForm.style.display = 'none';
+        showFormButton.style.display = 'block';
+        taskForm.reset();
+        
+        // 編集モードをリセット
+        const submitButton = document.getElementById('add-task-button');
+        submitButton.textContent = 'タスクを追加';
+        delete submitButton.dataset.editingTaskId;
+        cancelEditButton.style.display = 'none';
+    }
+
 
 
     
@@ -159,6 +183,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Function to handle task editing
     function handleEditTask(task) {
+        showTaskForm();
+
         taskTitleInput.value = task.title;
         taskDescriptionInput.value = task.description || '';
 
@@ -200,16 +226,16 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Function to reset the form to add mode
     function resetFormToAddMode() {
-        const submitButton = document.getElementById('add-task-button');
-        submitButton.textContent = 'タスクを追加';
-        delete submitButton.dataset.editingTaskId;
-        cancelEditButton.style.display = 'none';
-        taskForm.reset();
+        hideTaskForm();
     }
+
+    // Event listeners
+    showFormButton.addEventListener('click', showTaskForm); // 追加
     cancelEditButton.addEventListener('click', resetFormToAddMode);
     filterStatusSelect.addEventListener('change', () => {
         fetchTasks(filterStatusSelect.value);
     });
+
 
     // Function to add a new task
     taskForm.addEventListener('submit', async (event) => {
@@ -247,7 +273,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const newTask = await response.json();
                 showAlert('タスクが作成されました。', 'success');
-                taskForm.reset();
+                hideTaskForm();
             }
             
             fetchTasks(filterStatusSelect.value); // Refresh the task list
