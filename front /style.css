@@ -134,7 +134,7 @@ button[type="submit"]:hover {
     transform: scale(1.2); /* 見やすくするため少し大きく */
 }
 
-#task-list li .task-actions .delete-btn {
+#task-list li .task-actions .delete-button {
     background: #d9534f;
     color: white;
     border: none;
@@ -144,13 +144,11 @@ button[type="submit"]:hover {
     font-size: 0.9em;
 }
 
-#task-list li .task-actions .delete-btn:hover {
+#task-list li .task-actions .delete-button:hover {
     background: #c9302c;
 }
 
-/* (オプション) 編集ボタン用スタイル */
-/*
-#task-list li .task-actions .edit-btn {
+#task-list li .task-actions .edit-button {
     background: #f0ad4e;
     color: white;
     border: none;
@@ -161,7 +159,20 @@ button[type="submit"]:hover {
     margin-left: 5px;
 }
 
-#task-list li .task-actions .edit-btn:hover {
+#task-list li .task-actions .edit-button:hover {
     background: #ec971f;
 }
-*/
+
+#cancel-edit-button { 
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+#cancel-edit-button:hover {
+    background-color: #5a6268;
+}
